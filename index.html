@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Card Flip</title>
+  <style>
+    /* Add your card styles here */
+    .card {
+      width: 200px;
+      height: 200px;
+      background-color: #e0e0e0;
+      cursor: pointer;
+      perspective: 1000px;
+      transition: transform 0.5s;
+    }
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="card" onclick="flipCard()">
+    <!-- Content of your card goes here -->
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    function flipCard() {
+      const userBgColor = prompt('Enter background color:');
+      document.querySelector('.card').style.backgroundColor = userBgColor;
+
+      // Emit the card click event with user-specified bgcolor to the server
+      socket.emit('flipCard', userBgColor);
+    }
+
+    // Listen for real-time card click events from the server
+    socket.on('cardClicked', (bgcolor) => {
+      document.querySelector('.card').style.backgroundColor = bgcolor;
+    });
+  </script>
+</body>
+</html>
